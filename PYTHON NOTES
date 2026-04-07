@@ -1,0 +1,252 @@
+Quiz 1 Object Types 
+Standard Imports: 
+import numpy as np (numbers + lin alg) 
+import matplotlib.pyplot as plt (scatter plots) 
+import pandas as pd (data analysis + cleaning) 
+
+Loading in Data 
+pd.read_csv(file_path)
+carfeatures = pd.read_csv("data/features.csv")
+
+Operations 
+** = exponent 
+
+Object Types: 
+Np.array [] → arrayatizes a list via Numpy package 
+●	Remember to convert numbers within here into a string 
+
+Scatter Plots 
+plt.scatter(x=df["weight"], y=df["acceleration"])
+
+
+
+3 Types of For Loops:
+For title in movie_titles 
+	print (title) 
+
+For index in range(len(movie_titles))
+●	For index in range(3; length of list) = range(0,3)
+●	Convert range to list → [0,1,2]
+●	The loop will then loop over this 
+
+Manually plan out indexes 
+●	print("Looping over movie_titles:")
+●	index = 0
+●	for title in movie_titles:
+●	   rating = movie_ratings[index]
+●	   print("The movie " + title + " has an IMDB rating of " + str(rating))
+●	   index = index + 1
+
+
+While Loops 
+●	Run as long as a condition is held true 
+
+Quiz 2: If/Else Statements and Loops 
+Random Number 
+np.random.seed(158354304)
+●	Sets pool of randomly generate numbers 
+np.random.normal(size=3)
+●	Draws sample from normal dist (mean = 0, std = 1)
+
+
+Quiz 3
+Lecture 12
+Zip: pairs corresponding elements together by position to make loops more efficient; can zip as many lists as you want.
+movie_titles = ["The Umbrellas of Cherbourg", "M3gan", "Psycho"]
+movie_ratings = [7.8, 6.3, 8.5]
+
+for title, rating in zip(movie_titles, movie_ratings):
+   print("The movie " + title + " has an IMDB rating of " + str(rating))
+
+
+
+Lecture 14: User-Defined Functions (arguments = input, return values = output) 
+As opposed to built-in functions: type, abs, len, str, round 
+●	Didmod(dividend, divisor) → returns a tuple containing quotient and remainder 
+●	Can assign output to two separate variables 
+●	q, r = divmod(top_number, bottom_number)
+
+If I only care about one: 
+_, remainder = divmod(33, 11)
+
+
+Creating your own function 
+# create function named "quadratic_formula" that has 3 input variables.
+def quadratic_formula(a, b, c):
+   # just copy and paste code from the cell above
+   discrim = b**2 - 4*a*c
+   x_plus = -b + np.sqrt(discrim)
+   x_plus = x_plus/(2*a)
+
+   x_minus = -b - np.sqrt(discrim)
+   x_minus = x_minus/(2*a)
+
+   # return two values as output
+   return x_plus, x_minus
+
+Calling it:
+root1, root2 = quadratic_formula(a = 3, b =  -18, c = 15)
+
+
+GENERAL DEFINE FORM 
+def my_function(parameter):
+       body
+       return expression
+
+   #---- RUN
+   my_function(parameter = argument)
+
+
+Local Variables: All vars inside the function that aren’t returned 
+Global Variables: All vars inside the functions that are returned 
+
+Lecture 17: Pandas Operations + Data Manipulation 
+Data Frame: table of data (carfeatures) + tools 
+
+Eg.
+
+carfeatures = pd.DataFrame({
+    "Brand": ["Toyota","Honda","BMW","Tesla","Ford"],
+    "Price": [25000,24000,55000,65000,30000],
+    "Electric": [False,False,False, True,False]
+}) → each column 
+
+
+Tools: 
+Creating dataframe: pd.dataframe (data) 
+
+Reading a Dataset 
+Carfeatures.columns → returns Pandas Index (special container holding labels) 
+.Values converts the Index into a numpy array 
+Carfeatures [“column”] → returns the column, which is a series (one column of data) 
+carfeatures.sort_values(by="mpg")
+
+**Use Brackets 
+.loc → select specific column 
+.iloc [row, column] → sort and select by row/col number 
+●	: means eveything
+●	Select by entire row iloc [0,:] 
+○	Returns everything in row 0
+●	carfeatures.iloc[[0,4,396], :] or carfeatures.iloc[0:5, :] - rows 0 to 4, 5 excluded 
+○	Selected features 
+●	** [0:5] means everything from units 0 to 4
+○	It will start from the first entry to the (second entry - 1)
+●	Grabbing the last 3 rows: 
+○	print(carfeatures.iloc[ -3: , :])
+●	Grab the 3rd to last and 2nd to last row 
+○	print(carfeatures.iloc[ -3:-1 , :])
+●	
+
+.query        → filter rows
+●	Output = data frame that is filtered to desired characteristics 
+●	df.query("condition")
+●	Eg. 
+○	high_mpg = carfeatures.query("mpg >= 25")
+○	light_cars = carfeatures.query("weight < 3000")
+
+
+df["col"] alone → access column (Series).
+df["col"] = ... → add or overwrite a column.
+●	Eg. carfeatures["Expensive"] = carfeatures["Price"] > 30000
+
+
+Adding Variables 
+Adding new column to data frame: df["BMI"] = wt_kg / (ht_meters**2)
+●	Where df is the name of your dataframe 
+
+Apply function to every value in series: ht_meters = ht_inch.apply(inches_to_meters)
+
+Randomly assign each row to a group and add it to a column: 
+●	np.random.choice([1,2,3,4], size=num_rows)
+●	df["GroupID"] = group_no
+
+Returns unique values: 
+pd.unique(carfeatures["cylinders"])
+
+Applying 
+# Grab height and weight and convert to correct units
+
+def pounds_to_kg(wt):
+   return wt*0.45359237
+
+def inches_to_meters(ht):
+   ht_mm = ht*25.4
+   return ht_mm*1e-3
+
+#labeling rows/columns - this is a series 
+ht_inch = df_ht_wt ["Height(Inches)"]
+wt_lbs = df_ht_wt["Weight(Pounds)"]
+
+ht_meters = ht_inch.apply(inches_to_meters)
+●	.apply applies the inches_to_meters function to every element in the series 
+●	ht_meters[i] = inches_to_meters(ht_inch[i])
+ht_meters.name = "Height(Meters)"
+
+wt_kg = wt_lbs.apply(pounds_to_kg)
+wt_kg.name = "Weight(Kilograms)"
+
+Example: 
+# pick one of the rows in results.csv between 0 and 25,659
+
+result_row = 25
+# result_row = 3000
+# result_row = 24001
+race_result = df_results.iloc[result_row, :]
+
+print("race_result:", result_row)
+
+# grab the raceId number
+race_id = race_result["raceId"]
+print("race ID:", race_id)
+
+# use the raceId number to grab the corresponding row of the races.csv dataset
+race_info = df_races.query("raceId == @race_id")
+-	This supposedly only consists of one row 
+
+race_year = race_info["year"].item()
+-	.item accesses a scalar 
+race_name = race_info["name"].item()
+circuit_id = race_info["circuitId"].item()
+
+print("Year:", race_year)
+print("Name of Race:", race_name)
+
+# use circuitId number to grab the corresponding row of the circuits.csv dataset
+circuit_info = df_circuits.query("circuitId == @circuit_id")
+
+
+circuit_name = circuit_info["name"].item()
+circuit_loc = circuit_info["location"].item()
+circuit_country = circuit_info["country"].item()
+
+print("Circuit Name:", circuit_name)
+print("Location:", circuit_loc)
+print("Country:", circuit_country)
+
+
+Concatenation: stacking rows together (can’t be done if rows are diff sizes)  
+
+Merging 
+Code: 
+df_merged = pd.merge(left = results_short, right = races_short, how = "left", on = "raceId")
+
+display(df_merged)
+print()
+display(df_merged.iloc[[0, 23, 46], :])
+
+Analysis: 
+- "left" and "right" are the two DataFrames we are merging. The choice of which one is "left" and which one is "right" will affect the ultimate order of the columns in the merged DataFrame.
+
+- "how" is a string that describes how the merge is performed. For this class, we will just focus on "left" and "right". (Other advanced choices include "outer", "inner", "cross", "left_anti", "right_anti")
+
+- When we do `how = "left"`, we are basically treating the "left" DataFrame as the primary one. The order of the rows is chosen to maintain the order of the data in the left DataFrame.
+
+- "on" is a string corresponding to the merging variable. In this case we are merging based on "raceId". Rows in the two datasets with identical values of raceId are matched, and the additional info from the "right" DataFrame is added on to the "left" DataFrame.
+
+
+
+Eg
+.carfeatures is a pandas dataframe object 
+.head is a function that belongs to carfeatures object 
+
+
